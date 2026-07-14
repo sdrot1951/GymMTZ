@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AForge.Video" Version="2.2.5" />
+    <PackageReference Include="AForge.Video.DirectShow" Version="2.2.5" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GymApp.DAO\GymApp.DAO.csproj" />
+    <ProjectReference Include="..\GymApp.Entities\GymApp.Entities.csproj" />
+    <ProjectReference Include="..\GymApp.Utils\GymApp.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DPFPShrNET">
+      <HintPath>..\..\..\..\..\..\Program Files\DigitalPersona\One Touch SDK\.NET\Bin\DPFPShrNET.dll</HintPath>
+    </Reference>
+    <Reference Include="DPFPVerNET">
+      <HintPath>..\..\..\..\..\..\Program Files\DigitalPersona\One Touch SDK\.NET\Bin\DPFPVerNET.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
