@@ -44,7 +44,7 @@ namespace GymApp.DAO
 
         
         //Corte Diario
-        public int RegistrarCorte(int idEmpleado, decimal fondo, decimal declarado, string obs)
+/*        public int RegistrarCorte(int idEmpleado, decimal fondo, decimal declarado, string obs)
         {
             using (var conexion = GetConnection())
             {
@@ -58,6 +58,27 @@ namespace GymApp.DAO
 
                     conexion.Open();
                     // ExecuteScalar atrapa el SCOPE_IDENTITY() del SQL
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+*/
+
+        public int RegistrarCorte(int idEmpleado, decimal fondo, decimal esperado, decimal declarado, string obs, DateTime fechaOperacion)
+        {
+            using (var conexion = GetConnection())
+            {
+                using (var cmd = new SqlCommand("sp_RegistrarCorteTurno", conexion))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@fiEmpleado", idEmpleado);
+                    cmd.Parameters.AddWithValue("@fiFondoInicial", fondo);
+                    cmd.Parameters.AddWithValue("@fiMontoEsperado", esperado); // <-- NUEVO PARÁMETRO ENVIADO A SQL
+                    cmd.Parameters.AddWithValue("@fiMontoDeclarado", declarado);
+                    cmd.Parameters.AddWithValue("@fcObservaciones", string.IsNullOrEmpty(obs) ? (object)DBNull.Value : obs);
+                    cmd.Parameters.AddWithValue("@fdFechaOperacion", fechaOperacion.Date);
+
+                    conexion.Open();
                     return Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
@@ -175,7 +196,7 @@ namespace GymApp.DAO
 
 
         //Corte Diario
-        public int GenerarCorte(int idEmpleado, decimal fondoInicial, decimal montoDeclarado, string observaciones)
+        public int GenerarCorte(int idEmpleado, decimal fondoInicial, decimal montoEsperado, decimal montoDeclarado, string observaciones, DateTime fechaOperacion)
         {
             using (var conexion = GetConnection())
             {
@@ -184,8 +205,11 @@ namespace GymApp.DAO
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@fiEmpleado", idEmpleado);
                     cmd.Parameters.AddWithValue("@fiFondoInicial", fondoInicial);
+          
+                    cmd.Parameters.AddWithValue("@fiMontoEsperado", montoEsperado);
                     cmd.Parameters.AddWithValue("@fiMontoDeclarado", montoDeclarado);
                     cmd.Parameters.AddWithValue("@fcObservaciones", string.IsNullOrEmpty(observaciones) ? (object)DBNull.Value : observaciones);
+                    cmd.Parameters.AddWithValue("@fdFechaOperacion", fechaOperacion.Date);
 
 
                     conexion.Open();

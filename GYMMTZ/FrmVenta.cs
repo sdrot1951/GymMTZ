@@ -455,7 +455,7 @@ namespace GYMMTZ
             if (idConceptoSeleccionado == 0 || string.IsNullOrWhiteSpace(txtCantidad.Text)) return;
 
             int cantidad = Convert.ToInt32(txtCantidad.Text);
-            bool usarCombo = rdoMembresia.Checked || rdoVisita.Checked;
+            bool usarCombo = rdoMembresia.Checked;  //|| rdoVisita.Checked; Ya se puedem agregar difereentes tipos de visitas
 
             if (usarCombo)
             {

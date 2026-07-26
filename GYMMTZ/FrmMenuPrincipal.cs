@@ -45,6 +45,7 @@ namespace GYMMTZ
                 new MenuItem { Icon = "🏷️", Title = "Descuentos",   Subtitle = "Gestión de descuentos", Section = "OPERACIONES" },
                 new MenuItem { Icon = "💳", Title = "Membresías", Subtitle = "Vigencias y estados", Section = "CATÁLOGOS" },
                 new MenuItem { Icon = "💵", Title = "Cobranza", Subtitle = "Cuentas por cobrar", Section = "OPERACIONES" },
+                new MenuItem { Icon = "↩️", Title = "Cancelaciones", Subtitle = "Devoluciones de ventas", Section = "OPERACIONES" }, // <-- NUEVA LÍNEA
 
             }),
             ("CATÁLOGOS", new List<MenuItem>
@@ -537,6 +538,7 @@ namespace GYMMTZ
                 case "Corte de Caja": LoadCortesDeCaja(); break;
                 case "Gastos": LoadGastos(); break;
                 case "Cobranza": LoadCobranza(); break;
+                case "Cancelaciones": LoadCancelaciones(); break; // <-- NUEVA LÍNEA
                 case "Gastos Mensuales": LoadGastosMensuales(); break;
                 case "Inventario": LoadInventario(); break;
                 case "Compras": LoadCompras(); break;
@@ -1209,10 +1211,11 @@ namespace GYMMTZ
                         saldoActual += monto;
 
                         int rowIndex = _currentGrid.Rows.Add(
-                            "#" + row["Folio"].ToString(),
+                           // "#" + row["Folio"].ToString(),
                             Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy HH:mm"),
                             row["Tipo"].ToString(),
                             monto.ToString("$#,##0.00"),
+                            row["Pago"].ToString(),
                             row["Concepto"].ToString(),
                             row["Usuario"].ToString()
                         );
@@ -1341,7 +1344,7 @@ namespace GYMMTZ
                             row["TipoGasto"].ToString(),
                             monto.ToString("$#,##0.00"),                            
                             Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy"),
-                             row["TipoGasto"].ToString()
+                             row["Empleado"].ToString()
                         );
 
                         // Mantenemos el estilo de color naranja/rojo al buscar
@@ -1600,8 +1603,8 @@ namespace GYMMTZ
                     {
                 cli.fiCliente,
                 cli.fcNombre,
-                cli.fcApeMat,
                 cli.fcApePat,
+                cli.fcApeMat,               
                 cli.fiTelefono == 0 ? "N/A" : cli.fiTelefono.ToString(),
                 cli.fcEmail,
                 cli.fcEmergencia,
@@ -1614,7 +1617,7 @@ namespace GYMMTZ
                 LoadGenericCrud(
                     "Clientes",
                     "Registro y gestión de miembros del gimnasio",
-                    new[] { "ID", "Nombre", "Ap. Materno", "Ap. Paterno", "Teléfono", "Email", "Telefono Emergencias", "Fecha Nacimiento", "Observaciones" },
+                    new[] { "ID", "Nombre", "Ap. Paterno", "Ap. Materno",  "Teléfono", "Email", "Telefono Emergencias", "Fecha Nacimiento", "Observaciones" },
                     filasGrid.ToArray(),
 
                     // Evento Nuevo
@@ -2002,7 +2005,8 @@ namespace GYMMTZ
                 var bll = new GymApp.BLL.CajaBLL();
 
                 // Obtenemos los últimos 5 días inicialmente
-                DateTime desde = DateTime.Now.AddDays(-1);
+               // DateTime desde = DateTime.Now.AddDays(-1);
+                DateTime desde = DateTime.Today;
                 DateTime hasta = DateTime.Now;
 
                 DataTable dt = bll.ConsultarCaja( desde, hasta);
@@ -2017,10 +2021,11 @@ namespace GYMMTZ
 
                     filasGrid.Add(new object[]
                     {
-                "#" + row["Folio"].ToString(),
+                //"#" + row["Folio"].ToString(),
                 Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy HH:mm"),
                 row["Tipo"].ToString(),
                 monto.ToString("$#,##0.00"),
+                row["Pago"].ToString(),
                 row["Concepto"].ToString(),
                 row["Usuario"].ToString()
                     });
@@ -2030,7 +2035,7 @@ namespace GYMMTZ
                 string subtitulo = $"Movimientos del periodo | SALDO TOTAL: {saldoActual.ToString("$#,##0.00")}";
 
                 LoadGenericCrud("Caja Registradora", subtitulo,
-                    new[] { "Folio", "Fecha", "Tipo", "Monto", "Concepto", "Usuario" },
+                    new[] {  "Fecha", "Tipo", "Monto","Tipo Pago",  "Concepto", "Usuario" },
                     filasGrid.ToArray(),
                     null, // <--- Esto oculta el botón Nuevo
                     null,
@@ -2120,7 +2125,7 @@ namespace GYMMTZ
             };
 
             GymGrid.ApplyStyle(gridTurnos);
-            gridTurnos.Columns.Add("ID", "Folio");
+           // gridTurnos.Columns.Add("ID", "Folio");
             gridTurnos.Columns.Add("Empleado", "Empleado");
             gridTurnos.Columns.Add("Fecha", "Fecha / Hora");
             gridTurnos.Columns.Add("Esperado", "Esperado");
@@ -2142,7 +2147,7 @@ namespace GYMMTZ
                 {
                     decimal diferencia = Convert.ToDecimal(row["Diferencia"]);
                     int rowIndex = gridTurnos.Rows.Add(
-                        "#" + row["Folio"].ToString(),
+                      //  "#" + row["Folio"].ToString(),
                         row["Empleado"].ToString(),
                         Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy HH:mm"),
                         Convert.ToDecimal(row["Esperado"]).ToString("$#,##0.00"),
@@ -2180,11 +2185,11 @@ namespace GYMMTZ
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
             GymGrid.ApplyStyle(gridDiarios);
-            gridDiarios.Columns.Add("ID", "Folio");
+           // gridDiarios.Columns.Add("ID", "Folio");
             gridDiarios.Columns.Add("Fecha", "Fecha del Corte");
             gridDiarios.Columns.Add("Entradas", "Total Entradas");
             gridDiarios.Columns.Add("Salidas", "Total Gastos");
-            gridDiarios.Columns.Add("Declarado", "Efectivo Real");
+            gridDiarios.Columns.Add("Declarado", "Ingresos Totales");
             gridDiarios.Columns.Add("Diferencia", "Diferencia Global");
 
             // Datos de prueba (MOCK) para ver el diseño
@@ -2202,7 +2207,7 @@ namespace GYMMTZ
                 {
                     decimal diferencia = Convert.ToDecimal(row["Diferencia"]);
                     int rowIndex = gridDiarios.Rows.Add(
-                        "#" + row["Folio"].ToString(),
+                       // "#" + row["Folio"].ToString(),
                         Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy"),
                         Convert.ToDecimal(row["Entradas"]).ToString("$#,##0.00"),
                         Convert.ToDecimal(row["Salidas"]).ToString("$#,##0.00"),
@@ -2234,7 +2239,8 @@ namespace GYMMTZ
                 var bll = new GymApp.BLL.GastosBLL();
 
                 // Por defecto, mostraremos los gastos del mes actual
-                DateTime desde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+               // DateTime desde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                DateTime desde = DateTime.Today;
                 DateTime hasta = DateTime.Now.Date;
 
                 DataTable dtGastos = bll.ConsultarGastos("", desde, hasta);
@@ -2928,6 +2934,68 @@ namespace GYMMTZ
             }
         }
 
+        private void LoadCancelaciones()
+        {
+            try
+            {
+                var bll = new GymApp.BLL.DevolucionesBLL();
+
+                DateTime desde = _dtpDesde?.Value ?? DateTime.Now.AddDays(-30).Date;
+                DateTime hasta = _dtpHasta?.Value ?? DateTime.Now.Date;
+                string filtro = _currentSearchBox != null && _currentSearchBox.Text != "🔍  Buscar..." ? _currentSearchBox.Text.Trim() : "";
+
+                DataTable dt = bll.ConsultarDevoluciones(filtro, desde, hasta);
+
+                var filasGrid = new List<object[]>();
+                decimal totalDevuelto = 0;
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    decimal monto = Convert.ToDecimal(row["Monto"]);
+                    totalDevuelto += monto;
+
+                    filasGrid.Add(new object[]
+                    {
+                "DEV-" + row["Folio"].ToString(),
+                "TKT-" + row["VentaOrigen"].ToString(),
+                Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy HH:mm"),
+                row["Autorizo"].ToString(),
+                monto.ToString("$#,##0.00"),
+                row["Motivo"].ToString()
+                    });
+                }
+
+                string subtitulo = $"Devoluciones del {desde:dd/MM/yyyy} al {hasta:dd/MM/yyyy} | SALIDAS TOTALES: {totalDevuelto.ToString("$#,##0.00")}";
+
+                LoadGenericCrud(
+                    "Historial de Cancelaciones",
+                    subtitulo,
+                    new[] { "Folio Dev.", "Ticket Origen", "Fecha", "Autorizó", "Monto Devuelto", "Motivo" },
+                    filasGrid.ToArray(),
+
+                    (sender, e) => // Botón Nuevo (Manda llamar al FrmDevolucion)
+                    {
+                        FrmDevolucion frm = new FrmDevolucion();
+                        if (frm.ShowDialog() == DialogResult.OK)
+                        {
+                            LoadCancelaciones();
+                        }
+                    },
+                    null, // Sin Editar
+                    null  // Sin Eliminar (Historial auditable no se borra)
+                );
+
+                // Pintamos el monto de rojo/naranja porque es dinero que salió
+                foreach (DataGridViewRow r in _currentGrid.Rows)
+                {
+                    r.Cells["Monto_Devuelto"].Style.ForeColor = Color.FromArgb(255, 69, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar devoluciones: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         private void AbrirChecadorEnPanel()
         {

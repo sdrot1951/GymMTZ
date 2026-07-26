@@ -242,6 +242,12 @@
     <Compile Include="FrmCorteCajaDia.Designer.cs">
       <DependentUpon>FrmCorteCajaDia.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmDevolucion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDevolucion.Designer.cs">
+      <DependentUpon>FrmDevolucion.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmGastos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -359,6 +365,9 @@
     <EmbeddedResource Include="FrmCorteCajaDia.resx">
       <DependentUpon>FrmCorteCajaDia.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmDevolucion.resx">
+      <DependentUpon>FrmDevolucion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmGastos.resx">
       <DependentUpon>FrmGastos.cs</DependentUpon>
     </EmbeddedResource>
@@ -433,7 +442,7 @@
       <Name>GymApp.BLL</Name>
     </ProjectReference>
     <ProjectReference Include="..\GymApp.DAO\GymApp.DAO.csproj">
-      <Project>{4d41348c-9b6e-4e52-9c50-85ec2eafd6b1}</Project>
+      <Project>{81f0cc4c-d198-a8ea-476c-dbfca3c5b49d}</Project>
       <Name>GymApp.DAO</Name>
     </ProjectReference>
     <ProjectReference Include="..\GymApp.Entities\GymApp.Entities.csproj">

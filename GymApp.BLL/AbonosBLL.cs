@@ -19,7 +19,7 @@ namespace GymApp.BLL
                 throw new Exception("El monto del abono debe ser mayor a cero.");
 
             if (idTipoPago <= 0)
-                throw new Exception("Debe seleccionar una forma de pago válida.");
+                throw new Exception("Debe seleccionar una forma de pago válida.");  
 
             var dao = new DAO.AbonosDAO();
             return dao.RegistrarAbono(idSaldo, montoAbono, idTipoPago, idEmpleado);

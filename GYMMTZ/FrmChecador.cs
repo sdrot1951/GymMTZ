@@ -28,6 +28,11 @@ namespace GYMMTZ
         private TextBox txtBuscadorManual;
         private ListBox lstResultadosBusqueda;
 
+
+        private Button btnRenovarMembresia;
+        private int _clienteActualId;
+        private string _clienteActualNombre;
+
         public FrmChecador()
         {
             // 1. Cargamos el motor de base de datos a la RAM
@@ -96,8 +101,8 @@ namespace GYMMTZ
             // ==========================================
             pnlEstado = new Panel
             {
-                Size = new Size(800, 450), // Ampliamos la altura de 350 a 450
-                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 800) / 2, 280), // Lo subimos ligeramente
+                Size = new Size(900, 540), // Ampliamos la altura de 350 a 450
+                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 800) / 2, 250), // Lo subimos ligeramente
                 BackColor = Color.FromArgb(30, 30, 35) // Gris un poco más claro
             };
 
@@ -208,6 +213,24 @@ namespace GYMMTZ
             lstResultadosBusqueda.BringToFront();
 
 
+            // ====== NUEVO: BOTÓN DE RENOVACIÓN (OCULTO POR DEFECTO) ======
+            btnRenovarMembresia = new Button
+            {
+                Text = "🛒 Renovar Membresía",
+                Font = new Font("Segoe UI", 14f, FontStyle.Bold),
+                BackColor = Color.FromArgb(255, 69, 0),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(300, 45),
+                Location = new Point(250, 450), // <-- ASEGÚRATE DE QUE LA POSICIÓN SEA ESTA
+                Cursor = Cursors.Hand,
+                Visible = false
+            };
+            btnRenovarMembresia.FlatAppearance.BorderSize = 0;
+            btnRenovarMembresia.Click += BtnRenovarMembresia_Click;
+            pnlEstado.Controls.Add(btnRenovarMembresia);
+            btnRenovarMembresia.BringToFront();
+
 
             this.Controls.Add(pnlEstado);
 
@@ -224,6 +247,23 @@ namespace GYMMTZ
             // Configurar Timer para Limpiar Pantalla (se activa después de leer una huella)
             tmrLimpiar = new Timer { Interval = 4000 }; // 4 segundos de mensaje
             tmrLimpiar.Tick += (s, e) => ResetearPantalla();
+        }
+
+
+        private void BtnRenovarMembresia_Click(object sender, EventArgs e)
+        {
+            // 1. Detenemos el timer para que la pantalla no parpadee ni se borre sola
+            tmrLimpiar.Stop();
+
+            // 2. Abrimos la ventana de ventas usando tu constructor especializado!
+            using (var frm = new FrmVenta(_clienteActualId, _clienteActualNombre))
+            {
+                frm.ShowDialog();
+            }
+
+            // 3. Cuando terminen la venta y cierren la ventana, limpiamos el checador
+            ResetearPantalla();
+            this.Focus();
         }
 
         private void IniciarLector()
@@ -313,6 +353,24 @@ namespace GYMMTZ
                         lblIcono.Text = "❌";
                         break;
                 }
+                // Si está vencida o le quedan 0 días (vence hoy)
+                if (resultado.Estatus == EstatusAcceso.DenegadoMembresiaVencida || resultado.DiasRestantes <= 0)
+                {
+                    _clienteActualId = resultado.IdCliente;
+                    _clienteActualNombre = resultado.NombreCliente;
+                    btnRenovarMembresia.Visible = true;
+
+                    // Si hay que cobrar, le damos al admin 10 segundos para hacer clic antes de que se limpie la pantalla
+                    tmrLimpiar.Interval = 10000;
+                }
+                else
+                {
+                    btnRenovarMembresia.Visible = false;
+                    // Si entró normal, la pantalla se limpia rápido en 4 segundos
+                    tmrLimpiar.Interval = 4000;
+                }
+                // ======================================================
+
             }
             else
             {
@@ -336,6 +394,7 @@ namespace GYMMTZ
             lblIcono.Text = "👆";
             lblIcono.Visible = true;       // <-- Vuelve el dedito
             picFotoCliente.Visible = false; // <-- Se oculta la foto
+            btnRenovarMembresia.Visible = false; // <--- AGREGA ESTA LÍNEA
             lblNombre.Text = "Esperando Huella...";
             lblNombre.ForeColor = Color.White;
             lblMensaje.Text = "Coloque su dedo sobre el lector biométrico";

@@ -21,10 +21,11 @@ namespace GymApp.BLL
             string filtroLimpio = filtro == "🔍  Buscar..." ? "" : filtro.Trim();
             return _dao.BuscarMovimientosTexto(filtroLimpio);
         }
-        public int GenerarCorte(int idEmpleado, decimal fondo, decimal declarado, string obs)
+        public int GenerarCorte(int idEmpleado, decimal fondo, decimal esperado, decimal declarado, string obs, DateTime fechaOperacion)
         {
             var dao = new CajaDAO();
-            return dao.GenerarCorte(idEmpleado, fondo, declarado, obs);
+            // Aquí deben ir los 5 parámetros en orden
+            return dao.GenerarCorte(idEmpleado, fondo, esperado, declarado, obs, fechaOperacion);
         }
 
 
@@ -67,15 +68,22 @@ namespace GymApp.BLL
         }
 
         //Corte Turno
-        public int ProcesarCorteCaja(int idEmpleado, decimal fondoInicial, decimal montoDeclarado, string observaciones)
+        /*        public int ProcesarCorteCaja(int idEmpleado, decimal fondoInicial, decimal montoDeclarado, string observaciones)
+                {
+                    if (idEmpleado <= 0) throw new Exception("Error de sesión: No se identificó al empleado.");
+                    if (montoDeclarado < 0) throw new Exception("El monto declarado no puede ser negativo.");
+
+                    var dao = new DAO.CajaDAO();
+                    return dao.RegistrarCorte(idEmpleado, fondoInicial, montoDeclarado, observaciones);
+                }*/
+
+        public int ProcesarCorteCaja(int idEmpleado, decimal fondoInicial, decimal montoEsperado, decimal montoDeclarado, string observaciones, DateTime fechaOperacion)
         {
             if (idEmpleado <= 0) throw new Exception("Error de sesión: No se identificó al empleado.");
             if (montoDeclarado < 0) throw new Exception("El monto declarado no puede ser negativo.");
 
             var dao = new DAO.CajaDAO();
-            return dao.RegistrarCorte(idEmpleado, fondoInicial, montoDeclarado, observaciones);
+            return dao.RegistrarCorte(idEmpleado, fondoInicial, montoEsperado, montoDeclarado, observaciones, fechaOperacion);
         }
-
-
     }
 }
