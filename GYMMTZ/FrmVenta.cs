@@ -255,7 +255,7 @@ namespace GYMMTZ
 
             // El resto de la lógica de productos se queda igual
             txtCantidad.Text = "1";
-            txtCantidad.Enabled = !usarCombo;
+            //txtCantidad.Enabled = !usarCombo;
 
             txtBuscadorProducto.Visible = !usarCombo;
             cmbBuscadorProducto.Visible = usarCombo;
@@ -455,7 +455,8 @@ namespace GYMMTZ
             if (idConceptoSeleccionado == 0 || string.IsNullOrWhiteSpace(txtCantidad.Text)) return;
 
             int cantidad = Convert.ToInt32(txtCantidad.Text);
-            bool usarCombo = rdoMembresia.Checked;  //|| rdoVisita.Checked; Ya se puedem agregar difereentes tipos de visitas
+            bool usarCombo = rdoMembresia.Checked;  
+            //|| rdoVisita.Checked; Ya se puedem agregar difereentes tipos de visitas
 
             if (usarCombo)
             {
