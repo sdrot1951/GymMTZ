@@ -197,6 +197,12 @@
     <Compile Include="FrmAbonos.Designer.cs">
       <DependentUpon>FrmAbonos.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmActualizaFechaMembresia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmActualizaFechaMembresia.Designer.cs">
+      <DependentUpon>FrmActualizaFechaMembresia.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmAutorizaDescuento.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -341,6 +347,9 @@
     <EmbeddedResource Include="FrmAbonos.resx">
       <DependentUpon>FrmAbonos.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmActualizaFechaMembresia.resx">
+      <DependentUpon>FrmActualizaFechaMembresia.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmAutorizaDescuento.resx">
       <DependentUpon>FrmAutorizaDescuento.cs</DependentUpon>
     </EmbeddedResource>
@@ -453,6 +462,11 @@
       <Project>{305cfc00-be1e-44f9-9b54-865855d12521}</Project>
       <Name>GymApp.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="logo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />

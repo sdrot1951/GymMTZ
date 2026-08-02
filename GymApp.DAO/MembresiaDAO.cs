@@ -34,5 +34,33 @@ namespace GymApp.DAO
             }
             return dt;
         }
+
+        public void ActualizarFechaMembresia(int idMembresia, DateTime nuevaFecha, string usuarioModifica)
+        {
+            try
+            {
+                using (var conexion = GetConnection()) // Obtenemos la conexión
+                {
+                    // 👇 ¡ESTA ES LA LÍNEA MÁGICA QUE FALTABA! 👇
+                    conexion.Open();
+
+                    using (var cmd = new SqlCommand("sp_ActualizarFechaMembresia", conexion))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@fiCliente", idMembresia);
+                        cmd.Parameters.AddWithValue("@NuevaFecha", nuevaFecha);
+                        cmd.Parameters.AddWithValue("@UsuarioModifica", usuarioModifica);
+
+                        cmd.ExecuteNonQuery(); // Ahora sí se ejecutará sin problemas
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Encapsulamos el error para saber exactamente en qué capa falló[cite: 2]
+                throw new Exception("Error en BD al actualizar la membresía: " + ex.Message);
+            }
+        }
     }
 }

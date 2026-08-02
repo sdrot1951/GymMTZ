@@ -581,7 +581,7 @@ namespace GYMMTZ
                     ("📊", "Gastos del Mes", gastosMes, "Mes actual", GymTheme.Danger),
                 };
 
-                
+
 
                 int xPos = 0;
                 int cardW = (_content.Width - GymTheme.Padding * 2 - 60) / 4;
@@ -648,7 +648,7 @@ namespace GYMMTZ
                 grid.Columns.Add("Fecha", "Fecha");
                 grid.Columns.Add("Estado", "Empleado");
 
-                 
+
 
                 foreach (DataRow row in dtUltimasVentas.Rows)
                 {
@@ -658,7 +658,7 @@ namespace GYMMTZ
                         Convert.ToDecimal(row["Monto"]).ToString("$#,##0.00"),
                         Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy HH:mm"),
                         row["Cliente"].ToString()
-                        //row["Estado"].ToString()
+                    //row["Estado"].ToString()
                     );
                 }
 
@@ -757,7 +757,7 @@ namespace GYMMTZ
 
                 area.AxisY.MajorGrid.LineColor = Color.FromArgb(35, 35, 40);
 
-               
+
 
                 chartDashboard.ChartAreas.Add(area);
 
@@ -868,12 +868,12 @@ namespace GYMMTZ
 
             // Permitimos que el botón se muestre tanto en Cobranza como en Huellas
             // Busca esta línea y agrega || _currentPage == "Clientes"
-            if ((_currentPage == "Cobranza" ||  _currentPage == "Clientes") && eventoAbonar != null)
+            if ((_currentPage == "Cobranza" || _currentPage == "Clientes") && eventoAbonar != null)
             {
                 btnAbonar.Click += eventoAbonar;
                 btnAbonar.Visible = true;
 
-            if (_currentPage == "Clientes")
+                if (_currentPage == "Clientes")
                 {
                     // ====== MAGIA VISUAL: AHORA DICE VER PERFIL ======
                     btnAbonar.Text = "👤 Ver Perfil";
@@ -1080,7 +1080,7 @@ namespace GYMMTZ
                             emp.fiEmpleado,
                             emp.fcNombre,
                             emp.fcApePat,
-                            emp.fcApeMat,                            
+                            emp.fcApeMat,
                             emp.fcNombrePuesto,
                             emp.fiTelefono == 0 ? "N/A" : emp.fiTelefono.ToString(),
                             emp.fcEmail,
@@ -1089,93 +1089,93 @@ namespace GYMMTZ
                     }
                     _currentGrid.ResumeLayout(); // Vuelve a dibujar la tabla ya con los datos filtrados
                 }
-                    else if (_currentPage == "Clientes")
+                else if (_currentPage == "Clientes")
+                {
+                    var bll = new GymApp.BLL.ClienteBLL();
+
+                    var resultados = string.IsNullOrWhiteSpace(texto) ? bll.ObtenerTodos() : bll.Buscar(texto);
+
+                    _currentGrid.SuspendLayout();
+                    _currentGrid.Rows.Clear();
+
+                    foreach (var cli in resultados)
                     {
-                        var bll = new GymApp.BLL.ClienteBLL();
-
-                        var resultados = string.IsNullOrWhiteSpace(texto) ? bll.ObtenerTodos() : bll.Buscar(texto);
-
-                        _currentGrid.SuspendLayout();
-                        _currentGrid.Rows.Clear();
-
-                        foreach (var cli in resultados)
-                        {
-                            // Asegúrate de que el orden mapeado aquí sea idéntico al de tus columnas en LoadClientes
-                            _currentGrid.Rows.Add(
-                                cli.fiCliente,
-                                cli.fcNombre,
-                                cli.fcApeMat,
-                                cli.fcApePat,
-                                cli.fiTelefono == 0 ? "N/A" : cli.fiTelefono.ToString(),
-                                cli.fcEmail,
-                                cli.fcEmergencia,
-                                cli.fdFechaNac.ToString("dd/MM/yyyy"),
-                                cli.fcObservaciones
-                            );
-                        }
-                        _currentGrid.ResumeLayout();
+                        // Asegúrate de que el orden mapeado aquí sea idéntico al de tus columnas en LoadClientes
+                        _currentGrid.Rows.Add(
+                            cli.fiCliente,
+                            cli.fcNombre,
+                            cli.fcApeMat,
+                            cli.fcApePat,
+                            cli.fiTelefono == 0 ? "N/A" : cli.fiTelefono.ToString(),
+                            cli.fcEmail,
+                            cli.fcEmergencia,
+                            cli.fdFechaNac.ToString("dd/MM/yyyy"),
+                            cli.fcObservaciones
+                        );
                     }
-                        else if (_currentPage == "Productos")
+                    _currentGrid.ResumeLayout();
+                }
+                else if (_currentPage == "Productos")
+                {
+                    var bll = new GymApp.BLL.ProductoBLL();
+
+                    // Si el usuario borra el buscador traemos el catálogo completo, si escribe filtramos con el SP
+                    var resultados = string.IsNullOrWhiteSpace(texto) ? bll.ObtenerTodos() : bll.Buscar(texto);
+
+                    _currentGrid.SuspendLayout(); // Detiene el parpadeo visual
+                    _currentGrid.Rows.Clear();
+
+                    foreach (var prod in resultados)
                     {
-                        var bll = new GymApp.BLL.ProductoBLL();
-
-                        // Si el usuario borra el buscador traemos el catálogo completo, si escribe filtramos con el SP
-                        var resultados = string.IsNullOrWhiteSpace(texto) ? bll.ObtenerTodos() : bll.Buscar(texto);
-
-                        _currentGrid.SuspendLayout(); // Detiene el parpadeo visual
-                        _currentGrid.Rows.Clear();
-
-                        foreach (var prod in resultados)
-                        {
-                            // Mapeamos exactamente en el mismo orden que tu método LoadProductos
-                            _currentGrid.Rows.Add(
-                                prod.fiProducto,
-                                prod.fcDescripcion,
-                                "$" + prod.fiPrecio.ToString("0.00"), // Formato de moneda local
-                                "$" + prod.fiCosto.ToString("0.00"),
-                                prod.fcNombreRubro,
-                                prod.fiCantidad.ToString()
-                            );
-                        }
-                        _currentGrid.ResumeLayout(); // Dibuja los resultados filtrados
+                        // Mapeamos exactamente en el mismo orden que tu método LoadProductos
+                        _currentGrid.Rows.Add(
+                            prod.fiProducto,
+                            prod.fcDescripcion,
+                            "$" + prod.fiPrecio.ToString("0.00"), // Formato de moneda local
+                            "$" + prod.fiCosto.ToString("0.00"),
+                            prod.fcNombreRubro,
+                            prod.fiCantidad.ToString()
+                        );
                     }
-                        else if (_currentPage == "Ventas")
-                        {
-                            var bll = new GymApp.BLL.VentaBLL();
+                    _currentGrid.ResumeLayout(); // Dibuja los resultados filtrados
+                }
+                else if (_currentPage == "Ventas")
+                {
+                    var bll = new GymApp.BLL.VentaBLL();
 
-                            // Validamos si el texto es la marca de agua del buscador
-                            string filtroBusqueda = texto == "🔍  Buscar..." ? "" : texto.Trim();
+                    // Validamos si el texto es la marca de agua del buscador
+                    string filtroBusqueda = texto == "🔍  Buscar..." ? "" : texto.Trim();
 
                     // Tomamos las fechas de los controles
-                             DateTime? desde = _dtpDesde?.Value;
-                            DateTime? hasta = _dtpHasta?.Value;
+                    DateTime? desde = _dtpDesde?.Value;
+                    DateTime? hasta = _dtpHasta?.Value;
 
-                            var dtVentas = bll.ConsultarVentas(filtroBusqueda, desde, hasta);
+                    var dtVentas = bll.ConsultarVentas(filtroBusqueda, desde, hasta);
 
-                            _currentGrid.SuspendLayout();
-                            _currentGrid.Rows.Clear();
+                    _currentGrid.SuspendLayout();
+                    _currentGrid.Rows.Clear();
 
-                            foreach (DataRow row in dtVentas.Rows)
-                            {
-                                _currentGrid.Rows.Add(
-                                    //"#" + row["Folio"].ToString(),
-                                    row["Cliente"].ToString(),
-                                    row["Articulos"].ToString(), // <--- 1. Aquí inyectamos el texto con el SKU
-                                    Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy"),
-                                    Convert.ToDecimal(row["Total"]).ToString("$#,##0.00"),
-                                    Convert.ToDecimal(row["Deuda"]).ToString("$#,##0.00"),
-                                    Convert.ToDecimal(row["Saldo"]).ToString("$#,##0.00"),
-                                    row["Estado"].ToString(),
-                                    row["Vendedor"].ToString()
-
-
+                    foreach (DataRow row in dtVentas.Rows)
+                    {
+                        _currentGrid.Rows.Add(
+                            //"#" + row["Folio"].ToString(),
+                            row["Cliente"].ToString(),
+                            row["Articulos"].ToString(), // <--- 1. Aquí inyectamos el texto con el SKU
+                            Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy"),
+                            Convert.ToDecimal(row["Total"]).ToString("$#,##0.00"),
+                            Convert.ToDecimal(row["Deuda"]).ToString("$#,##0.00"),
+                            Convert.ToDecimal(row["Saldo"]).ToString("$#,##0.00"),
+                            row["Estado"].ToString(),
+                            row["Vendedor"].ToString()
 
 
 
-                                );
-                            }
-                            _currentGrid.ResumeLayout();
-                        }
+
+
+                        );
+                    }
+                    _currentGrid.ResumeLayout();
+                }
 
                 else if (_currentPage == "Caja")
                 {
@@ -1192,7 +1192,7 @@ namespace GYMMTZ
                         DateTime desde = _dtpDesde?.Value ?? DateTime.Now;
                         DateTime hasta = _dtpHasta?.Value ?? DateTime.Now;
 
-                        dt = bll.ConsultarCaja( desde, hasta);
+                        dt = bll.ConsultarCaja(desde, hasta);
                     }
                     else
                     {
@@ -1211,7 +1211,7 @@ namespace GYMMTZ
                         saldoActual += monto;
 
                         int rowIndex = _currentGrid.Rows.Add(
-                           // "#" + row["Folio"].ToString(),
+                            // "#" + row["Folio"].ToString(),
                             Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy HH:mm"),
                             row["Tipo"].ToString(),
                             monto.ToString("$#,##0.00"),
@@ -1298,7 +1298,7 @@ namespace GYMMTZ
                         totalDescuentos += monto;
 
                         _currentGrid.Rows.Add(
-                            
+
                             row["Descripcion"].ToString(),
                             monto.ToString("$#,##0.00"),
                             row["Venta"].ToString(),
@@ -1317,7 +1317,7 @@ namespace GYMMTZ
 
                 // ... (tu código anterior de Descuentos) ...
 
-              if (_currentPage == "Gastos")
+                if (_currentPage == "Gastos")
                 {
                     var bll = new GymApp.BLL.GastosBLL();
                     string filtroBusqueda = texto == "🔍  Buscar..." ? "" : texto.Trim();
@@ -1342,7 +1342,7 @@ namespace GYMMTZ
                             //row["ID"].ToString(),
                             row["Descripcion"].ToString(),
                             row["TipoGasto"].ToString(),
-                            monto.ToString("$#,##0.00"),                            
+                            monto.ToString("$#,##0.00"),
                             Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy"),
                              row["Empleado"].ToString()
                         );
@@ -1443,12 +1443,12 @@ namespace GYMMTZ
                         }
                     }
                     _currentGrid.ResumeLayout();
-                    
+
                     if (string.IsNullOrEmpty(filtroBusqueda))
                         _lblPageSub.Text = $"Historial de movimientos del {desde:dd/MM/yyyy} al {hasta:dd/MM/yyyy}";
                     else
                         _lblPageSub.Text = $"Arrastre para '{filtroBusqueda}' | {dt.Rows.Count} movimientos encontrados";
-                
+
                 }
                 else if (_currentPage == "Cobranza")
                 {
@@ -1604,7 +1604,7 @@ namespace GYMMTZ
                 cli.fiCliente,
                 cli.fcNombre,
                 cli.fcApePat,
-                cli.fcApeMat,               
+                cli.fcApeMat,
                 cli.fiTelefono == 0 ? "N/A" : cli.fiTelefono.ToString(),
                 cli.fcEmail,
                 cli.fcEmergencia,
@@ -1617,7 +1617,7 @@ namespace GYMMTZ
                 LoadGenericCrud(
                     "Clientes",
                     "Registro y gestión de miembros del gimnasio",
-                    new[] { "ID", "Nombre", "Ap. Paterno", "Ap. Materno",  "Teléfono", "Email", "Telefono Emergencias", "Fecha Nacimiento", "Observaciones" },
+                    new[] { "ID", "Nombre", "Ap. Paterno", "Ap. Materno", "Teléfono", "Email", "Telefono Emergencias", "Fecha Nacimiento", "Observaciones" },
                     filasGrid.ToArray(),
 
                     // Evento Nuevo
@@ -1817,8 +1817,8 @@ namespace GYMMTZ
                                 if (blleliminar.EliminarEmpleado(idSeleccionado))
                                 {
 
-                                   //MessageBox.Show("Producto removido del catálogo correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    
+                                    //MessageBox.Show("Producto removido del catálogo correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                                     MessageBox.Show("Empleado dado de baja correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                                     LoadEmpleados();
@@ -1860,7 +1860,7 @@ namespace GYMMTZ
                     {
                         prod.fiProducto,
                         prod.fcDescripcion,
-                        "$" + prod.fiPrecio.ToString("0.00"), 
+                        "$" + prod.fiPrecio.ToString("0.00"),
                         "$" + prod.fiCosto.ToString("0.00"),
                         prod.fcNombreRubro,
                         prod.fiCantidad.ToString()
@@ -1971,13 +1971,13 @@ namespace GYMMTZ
                 Convert.ToDecimal(row["Deuda"]).ToString("$#,##0.00"),
                 Convert.ToDecimal(row["Saldo"]).ToString("$#,##0.00"),
                 row["Estado"].ToString(),
-                row["Vendedor"].ToString()                                             
+                row["Vendedor"].ToString()
                     });
                 }
 
                 LoadGenericCrud("Ventas (Punto de Venta)", "Historial y registro de ventas de mostrador",
                     // <--- 2. Aquí agregamos la cabecera "Artículos" para que el Grid dibuje la columna
-                    new[] {"Cliente", "Artículos", "Fecha", "Monto", "Deuda", "Saldo","Estado", "Vendedor" },
+                    new[] { "Cliente", "Artículos", "Fecha", "Monto", "Deuda", "Saldo", "Estado", "Vendedor" },
                     filasGrid.ToArray(),
 
                     (sender, e) =>
@@ -2005,11 +2005,11 @@ namespace GYMMTZ
                 var bll = new GymApp.BLL.CajaBLL();
 
                 // Obtenemos los últimos 5 días inicialmente
-               // DateTime desde = DateTime.Now.AddDays(-1);
+                // DateTime desde = DateTime.Now.AddDays(-1);
                 DateTime desde = DateTime.Today;
                 DateTime hasta = DateTime.Now;
 
-                DataTable dt = bll.ConsultarCaja( desde, hasta);
+                DataTable dt = bll.ConsultarCaja(desde, hasta);
                 var filasGrid = new List<object[]>();
 
                 decimal saldoActual = 0;
@@ -2035,7 +2035,7 @@ namespace GYMMTZ
                 string subtitulo = $"Movimientos del periodo | SALDO TOTAL: {saldoActual.ToString("$#,##0.00")}";
 
                 LoadGenericCrud("Caja Registradora", subtitulo,
-                    new[] {  "Fecha", "Tipo", "Monto","Tipo Pago",  "Concepto", "Usuario" },
+                    new[] { "Fecha", "Tipo", "Monto", "Tipo Pago", "Concepto", "Usuario" },
                     filasGrid.ToArray(),
                     null, // <--- Esto oculta el botón Nuevo
                     null,
@@ -2082,8 +2082,8 @@ namespace GYMMTZ
             btnCorteTurno.Click += (s, e) =>
             {
                 // Aquí llamaremos al formulario de Turno más adelante
-                 FrmCorteCaja frm = new FrmCorteCaja();
-                 if (frm.ShowDialog() == DialogResult.OK) LoadCortesDeCaja();
+                FrmCorteCaja frm = new FrmCorteCaja();
+                if (frm.ShowDialog() == DialogResult.OK) LoadCortesDeCaja();
                 //MessageBox.Show("Módulo para Corte de Turno en desarrollo", "Aviso");
             };
 
@@ -2099,7 +2099,7 @@ namespace GYMMTZ
                 // Aquí llamaremos al formulario Diario más adelante
                 FrmCorteCajaDia frm = new FrmCorteCajaDia();
                 if (frm.ShowDialog() == DialogResult.OK) LoadCortesDeCaja();
-               // MessageBox.Show("Módulo para Corte Diario en desarrollo", "Aviso");
+                // MessageBox.Show("Módulo para Corte Diario en desarrollo", "Aviso");
             };
 
             toolbar.Controls.Add(btnCorteTurno);
@@ -2125,7 +2125,7 @@ namespace GYMMTZ
             };
 
             GymGrid.ApplyStyle(gridTurnos);
-           // gridTurnos.Columns.Add("ID", "Folio");
+            // gridTurnos.Columns.Add("ID", "Folio");
             gridTurnos.Columns.Add("Empleado", "Empleado");
             gridTurnos.Columns.Add("Fecha", "Fecha / Hora");
             gridTurnos.Columns.Add("Esperado", "Esperado");
@@ -2147,7 +2147,7 @@ namespace GYMMTZ
                 {
                     decimal diferencia = Convert.ToDecimal(row["Diferencia"]);
                     int rowIndex = gridTurnos.Rows.Add(
-                      //  "#" + row["Folio"].ToString(),
+                        //  "#" + row["Folio"].ToString(),
                         row["Empleado"].ToString(),
                         Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy HH:mm"),
                         Convert.ToDecimal(row["Esperado"]).ToString("$#,##0.00"),
@@ -2185,7 +2185,7 @@ namespace GYMMTZ
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
             GymGrid.ApplyStyle(gridDiarios);
-           // gridDiarios.Columns.Add("ID", "Folio");
+            // gridDiarios.Columns.Add("ID", "Folio");
             gridDiarios.Columns.Add("Fecha", "Fecha del Corte");
             gridDiarios.Columns.Add("Entradas", "Total Entradas");
             gridDiarios.Columns.Add("Salidas", "Total Gastos");
@@ -2207,7 +2207,7 @@ namespace GYMMTZ
                 {
                     decimal diferencia = Convert.ToDecimal(row["Diferencia"]);
                     int rowIndex = gridDiarios.Rows.Add(
-                       // "#" + row["Folio"].ToString(),
+                        // "#" + row["Folio"].ToString(),
                         Convert.ToDateTime(row["Fecha"]).ToString("dd/MM/yyyy"),
                         Convert.ToDecimal(row["Entradas"]).ToString("$#,##0.00"),
                         Convert.ToDecimal(row["Salidas"]).ToString("$#,##0.00"),
@@ -2239,7 +2239,7 @@ namespace GYMMTZ
                 var bll = new GymApp.BLL.GastosBLL();
 
                 // Por defecto, mostraremos los gastos del mes actual
-               // DateTime desde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                // DateTime desde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 DateTime desde = DateTime.Today;
                 DateTime hasta = DateTime.Now.Date;
 
@@ -2255,7 +2255,7 @@ namespace GYMMTZ
 
                     filasGrid.Add(new object[]
                     {
-                        
+
                         row["Descripcion"].ToString(),
                         row["TipoGasto"].ToString(), // Alineado con tu captura
                         monto.ToString("$#,##0.00"),
@@ -2486,7 +2486,7 @@ namespace GYMMTZ
             LoadGenericCrud(
                 "Registro Biométrico",
                 "Seleccione un cliente de la lista para capturar su huella",
-                new[] {"ID","Nombre", "Ap. Paterno", "Ap. Materno" },
+                new[] { "ID", "Nombre", "Ap. Paterno", "Ap. Materno" },
                 filas.ToArray(),
                 null,
                 null,
@@ -2589,7 +2589,7 @@ namespace GYMMTZ
                     grid.Rows.Add("ERR", "Error de conexión");
                 }
 
-              
+
 
                 // ========================================================
                 // ENRUTADOR DE CLICS (Abre el Formulario Correcto)
@@ -2687,109 +2687,254 @@ namespace GYMMTZ
             _content.Controls.Add(p);
         }
 
+        /* private void LoadMembresiasPantalla()
+         {
+             try
+             {
+                 // 1. Instanciamos la capa lógica y traemos el DataTable puro desde la base de datos
+                 var bll = new GymApp.BLL.MembresiaBLL();
+                 DataTable dtMembresias = bll.ConsultarMembresiasClientes(""); // Cadena vacía para traer todos al inicio
+
+                 _lblPageSub.Text = "Monitoreo de membresías vigentes y estados de acceso";
+
+                 // 2. Definimos las columnas visuales
+                 string[] columnas = new[] { "Cliente ID", "Cliente", "Membresía", "Fecha Inicio", "Vencimiento", "Días Restantes", "Estado" };
+
+                 // 3. Mapeamos las filas del DataTable a la lista de objetos de tu generador de Grid
+                 var filasGrid = new List<object[]>();
+
+                 foreach (DataRow row in dtMembresias.Rows)
+                 {
+                     filasGrid.Add(new object[]
+                     {
+                         row["fiCliente"].ToString(),
+                         row["Cliente"].ToString(),
+                         row["TipoMembresia"].ToString(),
+                         Convert.ToDateTime(row["FechaInicio"]).ToString("dd/MM/yyyy"),
+                         Convert.ToDateTime(row["FechaVencimiento"]).ToString("dd/MM/yyyy"),
+                         row["DiasRestantes"].ToString(),
+                         row["Estatus"].ToString()
+                     });
+                 }
+
+                 // 4. Invocamos tu grandioso método genérico
+                 LoadGenericCrud(
+                     "Membresías",
+                     "Monitoreo de membresías vigentes",
+                     columnas,
+                     filasGrid.ToArray(),
+                     null,
+                    // (sender, e) => { MessageBox.Show("Asignar nueva membresía manualmente en desarrollo"); },
+                     //(sender, e) => { MessageBox.Show("Modificar vigencia en desarrollo"); },
+                     //(sender, e) => { MessageBox.Show("Cancelar membresía en desarrollo"); }
+                // );
+
+                 (sender, e) =>
+                 {
+                     if (_currentGrid.SelectedRows.Count > 0)
+                     {
+                         int idCliente = Convert.ToInt32(_currentGrid.SelectedRows[0].Cells[0].Value);
+                         string nombreCliente = _currentGrid.SelectedRows[0].Cells[1].Value.ToString();
+
+                         // Abrimos la caja registradora con el cliente precargado
+                         FrmVenta frmVenta = new FrmVenta(idCliente, nombreCliente);
+                         if (frmVenta.ShowDialog() == DialogResult.OK)
+                         {
+                             LoadMembresiasPantalla(); // Recarga y verás cómo el semáforo cambia a verde
+                         }
+                     }
+                     else
+                     {
+                         MessageBox.Show("Por favor seleccione un cliente de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     }
+                 },
+
+             null, // Ocultar botón Eliminar
+             null  // Ocultar botón Abonar
+         );
+
+                 foreach (Control c in _content.Controls)
+                 {
+                     if (c is Panel toolbar) // La barra de herramientas
+                     {
+                         foreach (Control btn in toolbar.Controls)
+                         {
+                             // El botón de "Editar" es el que está en la posición 128, 4 según tu método LoadGenericCrud
+                             if (btn is Button b && b.Location.X == 128)
+                             {
+                                 b.Text = "🔄  Renovar Membresía";
+                                 b.BackColor = Color.LimeGreen; // ¡El verde que querías!
+                                 b.ForeColor = Color.Black;     // Texto negro para que resalte en el verde
+                                 b.Font = new System.Drawing.Font("Segoe UI", 9f, FontStyle.Bold);
+                                 b.Width = 180;                 // Un poco más ancho
+                                 b.FlatStyle = FlatStyle.Flat;
+                                 b.FlatAppearance.BorderSize = 0;
+                             }
+                         }
+                     }
+                 }
+
+                 // 5. Opcional visual: Pintar la columna de Días Restantes y Estatus según si ya venció
+                 foreach (DataGridViewRow r in _currentGrid.Rows)
+                 {
+                     int dias = Convert.ToInt32(r.Cells["Días_Restantes"].Value);
+                     if (dias <= 0 || r.Cells["Estado"].Value.ToString() == "Vencida")
+                     {
+                         r.Cells["Días_Restantes"].Style.ForeColor = Color.FromArgb(255, 69, 0); // Rojo/Naranja
+                         r.Cells["Estado"].Style.ForeColor = Color.FromArgb(255, 69, 0);
+                     }
+                     else if (dias <= 5)
+                     {
+                         r.Cells["Días_Restantes"].Style.ForeColor = Color.Yellow; // Alerta de por vencer
+                     }
+                     else
+                     {
+                         r.Cells["Estado"].Style.ForeColor = Color.LimeGreen; // Verde Activa
+                     }
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show("Error al cargar la pantalla de membresías: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+         */
+
         private void LoadMembresiasPantalla()
         {
             try
             {
-                // 1. Instanciamos la capa lógica y traemos el DataTable puro desde la base de datos
                 var bll = new GymApp.BLL.MembresiaBLL();
-                DataTable dtMembresias = bll.ConsultarMembresiasClientes(""); // Cadena vacía para traer todos al inicio
+                DataTable dtMembresias = bll.ConsultarMembresiasClientes("");
 
                 _lblPageSub.Text = "Monitoreo de membresías vigentes y estados de acceso";
 
-                // 2. Definimos las columnas visuales
                 string[] columnas = new[] { "Cliente ID", "Cliente", "Membresía", "Fecha Inicio", "Vencimiento", "Días Restantes", "Estado" };
-
-                // 3. Mapeamos las filas del DataTable a la lista de objetos de tu generador de Grid
                 var filasGrid = new List<object[]>();
 
                 foreach (DataRow row in dtMembresias.Rows)
                 {
                     filasGrid.Add(new object[]
                     {
-                        row["fiCliente"].ToString(),
-                        row["Cliente"].ToString(),
-                        row["TipoMembresia"].ToString(),
-                        Convert.ToDateTime(row["FechaInicio"]).ToString("dd/MM/yyyy"),
-                        Convert.ToDateTime(row["FechaVencimiento"]).ToString("dd/MM/yyyy"),
-                        row["DiasRestantes"].ToString(),
-                        row["Estatus"].ToString()
+                row["fiCliente"].ToString(),
+                row["Cliente"].ToString(),
+                row["TipoMembresia"].ToString(),
+                Convert.ToDateTime(row["FechaInicio"]).ToString("dd/MM/yyyy"),
+                Convert.ToDateTime(row["FechaVencimiento"]).ToString("dd/MM/yyyy"),
+                row["DiasRestantes"].ToString(),
+                row["Estatus"].ToString()
                     });
                 }
 
-                // 4. Invocamos tu grandioso método genérico
                 LoadGenericCrud(
                     "Membresías",
                     "Monitoreo de membresías vigentes",
                     columnas,
                     filasGrid.ToArray(),
-                    null,
-                   // (sender, e) => { MessageBox.Show("Asignar nueva membresía manualmente en desarrollo"); },
-                    //(sender, e) => { MessageBox.Show("Modificar vigencia en desarrollo"); },
-                    //(sender, e) => { MessageBox.Show("Cancelar membresía en desarrollo"); }
-               // );
 
-                (sender, e) =>
-                {
-                    if (_currentGrid.SelectedRows.Count > 0)
+                    // 1. EVENTO NUEVO (Lo usaremos para EDITAR FECHA DE MEMBRESÍA)
+                    (sender, e) =>
                     {
-                        int idCliente = Convert.ToInt32(_currentGrid.SelectedRows[0].Cells[0].Value);
-                        string nombreCliente = _currentGrid.SelectedRows[0].Cells[1].Value.ToString();
-
-                        // Abrimos la caja registradora con el cliente precargado
-                        FrmVenta frmVenta = new FrmVenta(idCliente, nombreCliente);
-                        if (frmVenta.ShowDialog() == DialogResult.OK)
+                        // Validación de Rol de Administrador
+                        if (GymApp.Core.SesionGlobal.NombrePuesto != "Administrador")
                         {
-                            LoadMembresiasPantalla(); // Recarga y verás cómo el semáforo cambia a verde
+                            MessageBox.Show("Acceso denegado. Solo los administradores pueden modificar fechas de membresía de forma manual.", "Seguridad", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
                         }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Por favor seleccione un cliente de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                },
-           
-            null, // Ocultar botón Eliminar
-            null  // Ocultar botón Abonar
-        );
 
+                        if (_currentGrid.SelectedRows.Count > 0)
+                        {
+                            int idCliente = Convert.ToInt32(_currentGrid.SelectedRows[0].Cells[0].Value);
+                            string nombreCliente = _currentGrid.SelectedRows[0].Cells[1].Value.ToString();
+                            DateTime fechaActual = Convert.ToDateTime(_currentGrid.SelectedRows[0].Cells[4].Value);
+
+                            FrmActualizaFechaMembresia frm = new FrmActualizaFechaMembresia(idCliente, nombreCliente, fechaActual);
+                            if (frm.ShowDialog() == DialogResult.OK)
+                            {
+                                LoadMembresiasPantalla(); // Recargamos para ver la nueva fecha
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Por favor seleccione un cliente de la lista dando clic en el margen izquierdo.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    },
+
+                    // 2. EVENTO EDITAR (Lo usas para RENOVAR MEMBRESÍA)
+                    (sender, e) =>
+                    {
+                        if (_currentGrid.SelectedRows.Count > 0)
+                        {
+                            int idCliente = Convert.ToInt32(_currentGrid.SelectedRows[0].Cells[0].Value);
+                            string nombreCliente = _currentGrid.SelectedRows[0].Cells[1].Value.ToString();
+
+                            FrmVenta frmVenta = new FrmVenta(idCliente, nombreCliente);
+                            if (frmVenta.ShowDialog() == DialogResult.OK)
+                            {
+                                LoadMembresiasPantalla();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Por favor seleccione un cliente de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    },
+
+                    null, // Ocultar botón Eliminar
+                    null  // Ocultar botón Abonar
+                );
+
+                // CONFIGURACIÓN VISUAL DE LOS BOTONES
                 foreach (Control c in _content.Controls)
                 {
-                    if (c is Panel toolbar) // La barra de herramientas
+                    if (c is Panel toolbar)
                     {
                         foreach (Control btn in toolbar.Controls)
                         {
-                            // El botón de "Editar" es el que está en la posición 128, 4 según tu método LoadGenericCrud
-                            if (btn is Button b && b.Location.X == 128)
+                            if (btn is Button b)
                             {
-                                b.Text = "🔄  Renovar Membresía";
-                                b.BackColor = Color.LimeGreen; // ¡El verde que querías!
-                                b.ForeColor = Color.Black;     // Texto negro para que resalte en el verde
-                                b.Font = new System.Drawing.Font("Segoe UI", 9f, FontStyle.Bold);
-                                b.Width = 180;                 // Un poco más ancho
-                                b.FlatStyle = FlatStyle.Flat;
-                                b.FlatAppearance.BorderSize = 0;
+                                if (b.Location.X == 128) // Botón Editar original (ahora Renovar)
+                                {
+                                    b.Text = "🔄  Renovar Membresía";
+                                    b.BackColor = Color.LimeGreen;
+                                    b.ForeColor = Color.Black;
+                                    b.Font = new System.Drawing.Font("Segoe UI", 9f, FontStyle.Bold);
+                                    b.Width = 180;
+                                    b.FlatStyle = FlatStyle.Flat;
+                                    b.FlatAppearance.BorderSize = 0;
+                                }
+                                else if (b.Location.X == 0) // Botón Nuevo original (ahora Editar Fecha)
+                                {
+                                    b.Text = "✏️  Editar Fecha";
+                                    b.BackColor = Color.FromArgb(255, 193, 7); // Color ámbar/dorado de advertencia
+                                    b.ForeColor = Color.Black;
+                                    b.Font = new System.Drawing.Font("Segoe UI", 9f, FontStyle.Bold);
+                                    b.Width = 125;
+                                    b.FlatStyle = FlatStyle.Flat;
+                                    b.FlatAppearance.BorderSize = 0;
+                                    b.Visible = true; // Forzamos visibilidad
+                                }
                             }
                         }
                     }
                 }
 
-                // 5. Opcional visual: Pintar la columna de Días Restantes y Estatus según si ya venció
+                // COLORES DE DÍAS RESTANTES
                 foreach (DataGridViewRow r in _currentGrid.Rows)
                 {
                     int dias = Convert.ToInt32(r.Cells["Días_Restantes"].Value);
                     if (dias <= 0 || r.Cells["Estado"].Value.ToString() == "Vencida")
                     {
-                        r.Cells["Días_Restantes"].Style.ForeColor = Color.FromArgb(255, 69, 0); // Rojo/Naranja
+                        r.Cells["Días_Restantes"].Style.ForeColor = Color.FromArgb(255, 69, 0);
                         r.Cells["Estado"].Style.ForeColor = Color.FromArgb(255, 69, 0);
                     }
                     else if (dias <= 5)
                     {
-                        r.Cells["Días_Restantes"].Style.ForeColor = Color.Yellow; // Alerta de por vencer
+                        r.Cells["Días_Restantes"].Style.ForeColor = Color.Yellow;
                     }
                     else
                     {
-                        r.Cells["Estado"].Style.ForeColor = Color.LimeGreen; // Verde Activa
+                        r.Cells["Estado"].Style.ForeColor = Color.LimeGreen;
                     }
                 }
             }
@@ -2798,6 +2943,7 @@ namespace GYMMTZ
                 MessageBox.Show("Error al cargar la pantalla de membresías: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private void LoadCobranza()
         {
@@ -3017,7 +3163,7 @@ namespace GYMMTZ
         private void FrmMenuPrincipal_Load(object sender, EventArgs e)
         {
             // Asignamos los valores de la sesión activa a las etiquetas de la pantalla
-      
+
 
 
             // Al abrir el menú, mandamos llamar los datos de la RAM global
@@ -3035,4 +3181,4 @@ namespace GYMMTZ
 
 
 
-      
+

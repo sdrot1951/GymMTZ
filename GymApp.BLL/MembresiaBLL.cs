@@ -22,5 +22,26 @@ namespace GymApp.BLL
                 throw new Exception("Error al procesar la solicitud de membresías: " + ex.Message);
             }
         }
+
+        public void ActualizarFechaMembresia(int idMembresia, DateTime nuevaFecha, string usuarioModifica)
+        {
+            try
+            {
+                // Validación básica de regla de negocio
+                if (idMembresia <= 0)
+                    throw new ArgumentException("El ID de la membresía no es válido.");
+
+                if (string.IsNullOrWhiteSpace(usuarioModifica))
+                    throw new ArgumentException("Se requiere el usuario administrador para el registro.");
+
+                // Instanciamos el DAO y pasamos la petición[cite: 1]
+                MembresiaDAO dao = new MembresiaDAO();
+                dao.ActualizarFechaMembresia(idMembresia, nuevaFecha, usuarioModifica.Trim());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar la actualización de membresía: " + ex.Message);
+            }
+        }
     }
 }
